@@ -51,7 +51,6 @@ public class UserController {
 	public ResponseEntity<User> createUser(@RequestBody CreateUserRequest createUserRequest) {
 		User user = new User();
 		user.setUsername(createUserRequest.getUsername());
-		log.info("User name set with ", createUserRequest.getUsername());
 		Cart cart = new Cart();
 		cartRepository.save(cart);
 		user.setCart(cart);
@@ -59,11 +58,16 @@ public class UserController {
 				!createUserRequest.getPassword().equals(createUserRequest.getConfirmPassword())){
 			//System.out.println("Error - Either length is less than 7 or pass and conf pass do not match.
 			// Unable to create createUserRequest.getUsername());
-			return ResponseEntity.badRequest().build();
+			final ResponseEntity<User> response = ResponseEntity.badRequest().build();
+			log.info("Create User Failure", response);
+			return response;
+
 		}
 		user.setPassword(bCryptPasswordEncoder.encode(createUserRequest.getPassword()));
 		userRepository.save(user);
-		return ResponseEntity.ok(user);
+		final ResponseEntity<User> response = ResponseEntity.ok(user);
+		log.info("Create User Success", response);
+		return response;
 	}
 	
 }

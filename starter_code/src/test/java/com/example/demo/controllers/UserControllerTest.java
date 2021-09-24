@@ -53,6 +53,19 @@ public class UserControllerTest {
     }
 
     @Test
+    public void create_user_sad_path() throws Exception{
+        when(bCryptPasswordEncoder.encode("test")).thenReturn("thisIsHashed");
+        CreateUserRequest createUserRequest = new CreateUserRequest();
+        createUserRequest.setUsername("test1");
+        createUserRequest.setPassword("test");
+        createUserRequest.setConfirmPassword("test");
+
+        final ResponseEntity<User> response = userController.createUser(createUserRequest);
+        assertNotNull(response);
+        assertEquals(400, response.getStatusCodeValue());
+    }
+
+    @Test
     public void find_by_username_happy_path() throws Exception{
 
         CreateUserRequest createUserRequest = new CreateUserRequest();
